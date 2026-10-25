@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a3550"/>
+      <stop offset="1" stop-color="#151a24"/>
+    </linearGradient>
+    <linearGradient id="done" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#46b8a0"/>
+      <stop offset="1" stop-color="#63dcaa"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#bg)"/>
+  <rect x="8.5" y="8.5" width="111" height="111" rx="25.5" fill="none" stroke="#ffffff" stroke-opacity="0.12"/>
+  <!-- three projects, each a progress bar: done, half done with work in progress, just started -->
+  <g>
+    <rect x="26" y="32" width="76" height="14" rx="7" fill="#384359"/>
+    <rect x="26" y="32" width="76" height="14" rx="7" fill="url(#done)"/>
+    <rect x="26" y="57" width="76" height="14" rx="7" fill="#384359"/>
+    <rect x="26" y="57" width="52" height="14" rx="7" fill="#e5b25d"/>
+    <rect x="26" y="57" width="36" height="14" rx="7" fill="url(#done)"/>
+    <rect x="26" y="82" width="76" height="14" rx="7" fill="#384359"/>
+    <rect x="26" y="82" width="22" height="14" rx="7" fill="url(#done)"/>
+  </g>
+</svg>

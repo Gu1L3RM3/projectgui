@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=ProjectGui
+Comment=Track your projects, tasks and progress
+Type=Application
+Exec=projectgui gui
+Icon=io.github.Gu1L3RM3.ProjectGui
+Terminal=false
+Categories=Office;ProjectManagement;Utility;
+Keywords=project;task;todo;progress;tracker;
+StartupNotify=true
+StartupWMClass=io.github.Gu1L3RM3.ProjectGui
