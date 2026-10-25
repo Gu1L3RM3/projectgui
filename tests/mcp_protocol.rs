@@ -1,5 +1,5 @@
 #![cfg(feature = "mcp")]
-//! Speaks real JSON-RPC to `projectgui mcp` over stdio.
+//! Speaks real JSON-RPC to `pgui mcp` over stdio.
 mod common;
 
 use std::io::{BufRead, BufReader, Write};
@@ -18,7 +18,7 @@ struct Client {
 
 impl Client {
     fn start(home: &std::path::Path) -> Self {
-        let mut child = Command::new(assert_cmd::cargo::cargo_bin("projectgui"))
+        let mut child = Command::new(assert_cmd::cargo::cargo_bin("pgui"))
             .arg("mcp")
             .env("PROJECTGUI_DB", home.join("test.db"))
             .env("PROJECTGUI_CONFIG", home.join("config.toml"))
@@ -43,7 +43,7 @@ impl Client {
                 "clientInfo": { "name": "test", "version": "0" }
             }),
         );
-        assert_eq!(init["serverInfo"]["name"], "projectgui");
+        assert_eq!(init["serverInfo"]["name"], "pgui");
         c.send(json!({ "jsonrpc": "2.0", "method": "notifications/initialized" }));
         c
     }
@@ -160,15 +160,15 @@ fn lists_tools_resources_prompts() {
     assert_eq!(
         uris,
         [
-            "projectgui://projects",
-            "projectgui://summary",
-            "projectgui://project-file-format"
+            "pgui://projects",
+            "pgui://summary",
+            "pgui://project-file-format"
         ]
     );
     let tpl = c.request("resources/templates/list", json!({}));
     assert_eq!(
         tpl["resourceTemplates"][0]["uriTemplate"],
-        "projectgui://projects/{id}"
+        "pgui://projects/{id}"
     );
 
     let prompts = c.request("prompts/list", json!({}));
@@ -211,7 +211,7 @@ fn agent_workflow_end_to_end_and_visible_to_the_cli() {
 
     let read = c.request(
         "resources/read",
-        json!({ "uri": format!("projectgui://projects/{pid}") }),
+        json!({ "uri": format!("pgui://projects/{pid}") }),
     );
     assert!(
         read["contents"][0]["text"]
@@ -219,7 +219,7 @@ fn agent_workflow_end_to_end_and_visible_to_the_cli() {
             .unwrap()
             .contains("From agent")
     );
-    let summary = c.request("resources/read", json!({ "uri": "projectgui://summary" }));
+    let summary = c.request("resources/read", json!({ "uri": "pgui://summary" }));
     assert!(
         summary["contents"][0]["text"]
             .as_str()
@@ -314,7 +314,7 @@ fn project_files_are_scanned_then_synced_and_visible_to_the_cli() {
     }
     let format = c.request(
         "resources/read",
-        json!({ "uri": "projectgui://project-file-format" }),
+        json!({ "uri": "pgui://project-file-format" }),
     );
     assert!(
         format["contents"][0]["text"]

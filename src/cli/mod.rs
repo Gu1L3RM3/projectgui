@@ -36,7 +36,7 @@ pub fn run() -> i32 {
     }
 }
 
-/// Writes to stdout and treats a closed pipe (`projectgui list | head`) as success.
+/// Writes to stdout and treats a closed pipe (`pgui list | head`) as success.
 fn out(text: &str) {
     let _ = std::io::stdout().write_all(text.as_bytes());
 }
@@ -106,12 +106,7 @@ fn execute(cli: Cli) -> Result<i32> {
     // Commands that never touch the database.
     match &cli.command {
         Command::Completions { shell } => {
-            clap_complete::generate(
-                *shell,
-                &mut Cli::command(),
-                "projectgui",
-                &mut std::io::stdout(),
-            );
+            clap_complete::generate(*shell, &mut Cli::command(), "pgui", &mut std::io::stdout());
             return Ok(0);
         }
         Command::Config(c) => return config_command(c, &mut cfg, &config_path, json).map(|()| 0),
@@ -135,7 +130,7 @@ fn execute(cli: Cli) -> Result<i32> {
                 _ => None,
             };
             let info = json!({
-                "name": "projectgui", "version": env!("CARGO_PKG_VERSION"),
+                "name": "pgui", "version": env!("CARGO_PKG_VERSION"),
                 "os": std::env::consts::OS, "arch": std::env::consts::ARCH,
                 "database": config::db_path(&cfg), "config": config_path,
             });
@@ -152,7 +147,7 @@ fn execute(cli: Cli) -> Result<i32> {
                 out_json(&info)
             } else {
                 out(&format!(
-                    "projectgui {} ({}-{})\n",
+                    "pgui {} ({}-{})\n",
                     env!("CARGO_PKG_VERSION"),
                     std::env::consts::OS,
                     std::env::consts::ARCH
@@ -208,7 +203,7 @@ fn execute(cli: Cli) -> Result<i32> {
                 let p = svc
                     .find_for_path(Path::new(&dir))?
                     .ok_or(AppError::NotFound {
-                        what: "project linked to this directory (see `projectgui link`)",
+                        what: "project linked to this directory (see `pgui link`)",
                         query: dir,
                     })?;
                 print_detail(&p, &st, json, now);
@@ -378,7 +373,7 @@ fn execute(cli: Cli) -> Result<i32> {
                 .map_or_else(|| "My project".into(), |n| n.to_string_lossy().into_owned());
             let path = svc.init_file(Path::new(&dir), target.as_ref(), &hint, force)?;
             out(&format!(
-                "Wrote {}\nEdit it, then run: projectgui sync\n",
+                "Wrote {}\nEdit it, then run: pgui sync\n",
                 path.display()
             ));
         }
@@ -447,7 +442,7 @@ fn svc_project_for_init(
                 return Err(AppError::invalid(
                     "project",
                     format!(
-                        "'{}' is not linked to this directory; run `projectgui link {}` here first",
+                        "'{}' is not linked to this directory; run `pgui link {}` here first",
                         p.slug, p.slug
                     ),
                 ));

@@ -3100,6 +3100,35 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9b4f627cb1b25917193a259e49bdad08f671f8d9708acfd5fe0a8c1455d87220"
 
 [[package]]
+name = "pgui"
+version = "0.1.2"
+dependencies = [
+ "anyhow",
+ "assert_cmd",
+ "axoupdater",
+ "chrono",
+ "clap",
+ "clap_complete",
+ "dirs",
+ "iced",
+ "ksni",
+ "rmcp",
+ "rusqlite",
+ "semver",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "thiserror 2.0.21",
+ "tiny_http",
+ "tokio",
+ "toml",
+ "tracing",
+ "tracing-subscriber",
+ "ulid",
+ "ureq",
+]
+
+[[package]]
 name = "pin-project"
 version = "1.1.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3254,35 +3283,6 @@ name = "profiling"
 version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3d595e54a326bc53c1c197b32d295e14b169e3cfeaa8dc82b529f947fba6bcf5"
-
-[[package]]
-name = "projectgui"
-version = "0.1.2"
-dependencies = [
- "anyhow",
- "assert_cmd",
- "axoupdater",
- "chrono",
- "clap",
- "clap_complete",
- "dirs",
- "iced",
- "ksni",
- "rmcp",
- "rusqlite",
- "semver",
- "serde",
- "serde_json",
- "tempfile",
- "thiserror 2.0.21",
- "tiny_http",
- "tokio",
- "toml",
- "tracing",
- "tracing-subscriber",
- "ulid",
- "ureq",
-]
 
 [[package]]
 name = "pxfm"

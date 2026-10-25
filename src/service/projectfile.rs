@@ -99,7 +99,7 @@ pub fn read_text(dir: &Path) -> Result<String> {
 
 fn read_file(path: &Path) -> Result<String> {
     let meta = std::fs::symlink_metadata(path).map_err(|_| AppError::NotFound {
-        what: "project file (run `projectgui init-file` to create one)",
+        what: "project file (run `pgui init-file` to create one)",
         query: path.display().to_string(),
     })?;
     if !meta.is_file() {
@@ -302,7 +302,7 @@ pub fn render_file(project: Option<&Project>, title_hint: &str) -> String {
     let q = |s: &str| toml::Value::String(s.to_string()).to_string();
     let Some(p) = project else {
         return format!(
-            "# ProjectGui keeps this file and its database in step. Edit it, then run `projectgui sync`;\n\
+            "# ProjectGui keeps this file and its database in step. Edit it, then run `pgui sync`;\n\
              # changes made in ProjectGui are written back here (comments are not kept). Tasks are matched by title.\n\
              title = {}\n\
              # description = \"What this project is\"\n\
@@ -568,7 +568,7 @@ impl<R: Repository> Service<R> {
     fn mirror_via(&mut self, p: &Project, dir: &Path, tmp: &Path) -> Result<()> {
         let path = dir.join(FILE_NAME);
         let unsynced = format!(
-            "{} has edits that were not synced, so it was not updated. Run `projectgui sync` in {} to load \
+            "{} has edits that were not synced, so it was not updated. Run `pgui sync` in {} to load \
              them (the file's values win), then repeat this change if it was undone.",
             path.display(),
             dir.display()
@@ -988,7 +988,7 @@ value = "#3"
         assert_eq!(on_disk(dir.path()), mine, "the user's edit survives");
         let notes = s.take_notices();
         assert!(
-            notes.len() == 1 && notes[0].contains("projectgui sync"),
+            notes.len() == 1 && notes[0].contains("pgui sync"),
             "{notes:?}"
         );
 

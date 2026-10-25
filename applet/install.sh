@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 #
 # Installs the COSMIC panel applet, the app icons and the ProjectGui launcher into the user's home (no root).
-# Build first: cargo build --release (in applet/). `projectgui` itself comes from the release installer.
+# Build first: cargo build --release (in applet/). `pgui` itself comes from the release installer.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -15,9 +15,9 @@ ICON_DIR="$PREFIX/share/icons/hicolor"
 applet="$ROOT/applet/target/release/projectgui-applet"
 [[ -x "$applet" ]] || { echo "error: $applet not found; run 'cargo build --release' in applet/ first" >&2; exit 1; }
 
-projectgui="$(command -v projectgui || true)"
-[[ -n "$projectgui" ]] || projectgui="$BIN_DIR/projectgui"
-[[ -x "$projectgui" ]] || echo "warning: projectgui not found; install it first (see README)" >&2
+pgui="$(command -v pgui || true)"
+[[ -n "$pgui" ]] || pgui="$BIN_DIR/pgui"
+[[ -x "$pgui" ]] || echo "warning: pgui not found; install it first (see README)" >&2
 
 mkdir -p "$BIN_DIR" "$APPS_DIR" "$ICON_DIR/scalable/apps"
 install -m755 "$applet" "$BIN_DIR/projectgui-applet"
@@ -27,7 +27,7 @@ install -m644 "$ROOT/assets/$APP_ID-symbolic.svg" "$ICON_DIR/scalable/apps/$APP_
 # cosmic-panel and launchers run with a minimal PATH that lacks ~/.local/bin, so Exec gets absolute paths.
 sed "s|^Exec=.*|Exec=$BIN_DIR/projectgui-applet|" "$ROOT/applet/data/$APP_ID.Applet.desktop" \
     > "$APPS_DIR/$APP_ID.Applet.desktop"
-sed "s|^Exec=.*|Exec=$projectgui gui|" "$ROOT/assets/$APP_ID.desktop" > "$APPS_DIR/$APP_ID.desktop"
+sed "s|^Exec=.*|Exec=$pgui gui|" "$ROOT/assets/$APP_ID.desktop" > "$APPS_DIR/$APP_ID.desktop"
 
 command -v update-desktop-database >/dev/null && update-desktop-database "$APPS_DIR" >/dev/null 2>&1 || true
 command -v gtk-update-icon-cache >/dev/null && gtk-update-icon-cache -f -t "$ICON_DIR" >/dev/null 2>&1 || true

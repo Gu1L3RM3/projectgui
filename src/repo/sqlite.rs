@@ -137,7 +137,7 @@ impl SqliteRepository {
         let version = migrations::current(conn)?;
         if version > migrations::LATEST {
             return Err(AppError::Storage(format!(
-                "database schema v{version} is newer than this build (v{}); upgrade projectgui",
+                "database schema v{version} is newer than this build (v{}); upgrade pgui",
                 migrations::LATEST
             )));
         }

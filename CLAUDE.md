@@ -7,7 +7,7 @@ with the code.
 
 ProjectGui: a local project tracker. Projects have a priority, a stage, tasks and a progress bar derived from finished
 tasks. The same SQLite database is used by a CLI, an MCP server for coding agents (Claude Code, Codex, OpenCode), an
-iced GUI and a Linux tray indicator. No daemon, no cloud; the network is used only for the optional update check. One Rust package and one binary named `projectgui`, plus a separate COSMIC panel applet crate in `applet/`. Everything is written in English: code, CLI
+iced GUI and a Linux tray indicator. No daemon, no cloud; the network is used only for the optional update check. One Rust package and one binary named `pgui`, plus a separate COSMIC panel applet crate in `applet/`. Everything is written in English: code, CLI
 output, MCP descriptions, docs, commit messages.
 
 ## Commands
@@ -52,13 +52,13 @@ src/service/           use cases; the only place business rules live
   projectfile.rs       `.project-status` (TOML): parse, plan, sync_dir (one write_batch), scan, mirror (DB -> file); docs/project-file.md
 src/repo/              Repository trait + SqliteRepository, migrations/*.sql
 src/cli/               clap args, rendering, colors, install-mcp, update command
-src/gui/               iced window: projects, tasks, references, update banner; theme.rs = palettes; tray.rs = Linux tray (ksni) + single-instance socket (feature `gui`, run with `projectgui gui`)
+src/gui/               iced window: projects, tasks, references, update banner; theme.rs = palettes; tray.rs = Linux tray (ksni) + single-instance socket (feature `gui`, run with `pgui gui`)
 src/mcp/               rmcp server: tools, resources, prompts, strict argument parsing
 src/update/            release check, notice.json parsing, install-method detection (feature `update`)
 tests/                 cli_e2e, mcp_protocol, repo_concurrency, update (+ tests/common helpers)
 assets/                app icon (color + symbolic SVG) and the launcher .desktop entry
 applet/                COSMIC panel applet (own crate and Cargo.lock, libcosmic pinned to COSMIC 1.0.0); reads and
-                       changes data only through the `projectgui` CLI (`--json list`, `task done/reopen`); install.sh
+                       changes data only through the `pgui` CLI (`--json list`, `task done/reopen`); install.sh
 docs/                  agents.md (MCP setup), update.md (update + notice.json), project-file.md (.project-status), images/ (README screenshots)
 .github/workflows/     ci.yml (fmt, clippy, tests on Linux/macOS/Windows x feature sets), release.yml (cargo-dist, on tag v*)
 dist-workspace.toml    cargo-dist config: targets, installers, release features
@@ -157,12 +157,12 @@ dist-workspace.toml    cargo-dist config: targets, installers, release features
 
 ## What works and known gaps
 
-- CLI, MCP server (`projectgui mcp`, `install-mcp`), `.project-status` sync, backup/export/import, update check and
+- CLI, MCP server (`pgui mcp`, `install-mcp`), `.project-status` sync, backup/export/import, update check and
   `notice.json`: done and tested.
-- GUI (`projectgui gui`, feature `gui`): project and task CRUD, search/sort/filter, references, 5 themes (frosted
+- GUI (`pgui gui`, feature `gui`): project and task CRUD, search/sort/filter, references, 5 themes (frosted
   translucent default, slate, paper, dusk, contrast; `gui_theme`, `gui_opacity` in the config), live reload via
   `data_version`, update banner. Linux tray (ksni) with top projects, update line, Open and Quit; a second
-  `projectgui gui` focuses the running window through a socket in `$XDG_RUNTIME_DIR`. Closing the window quits
+  `pgui gui` focuses the running window through a socket in `$XDG_RUNTIME_DIR`. Closing the window quits
   (hide-to-tray needs `iced::daemon`). The window skips the tray while `projectgui-applet` runs (found via `/proc/*/cmdline`),
   so COSMIC shows one icon, not two.
 - Tested by hand on Linux (COSMIC). macOS and Windows run the test suite in CI only; their GUI is unverified and they
@@ -170,7 +170,7 @@ dist-workspace.toml    cargo-dist config: targets, installers, release features
 - COSMIC panel applet (`applet/`): panel icon with overall progress, popup with open projects, task checkboxes and
   Open ProjectGui. Panel icon checked on COSMIC; popup interaction awaits a human check; not built in CI. Build and check it with `cargo build --release`,
   `cargo clippy --release -- -D warnings` and `cargo test --release` inside `applet/`.
-- Self-update (`projectgui update`) has not yet gone from one real release to the next.
+- Self-update (`pgui update`) has not yet gone from one real release to the next.
 
 ## Releasing
 
@@ -178,7 +178,7 @@ dist-workspace.toml    cargo-dist config: targets, installers, release features
 push or force push. Bump `version` in `Cargo.toml` in a PR, merge it, then tag the merge commit `vX.Y.Z` and push the
 tag. If CI job names change (matrix edits), update the ruleset's required checks too. `release.yml` (generated by `dist init`; regenerate
 with `dist generate` after changing `dist-workspace.toml`, never hand-edit) builds the archives, shell/PowerShell
-installers and checksums and publishes the GitHub Release. The installer receipt is what `projectgui update` uses.
+installers and checksums and publishes the GitHub Release. The installer receipt is what `pgui update` uses.
 
 ## Working agreements
 

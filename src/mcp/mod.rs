@@ -98,7 +98,7 @@ impl ServerHandler for ProjectGuiServer {
                 .enable_prompts()
                 .build(),
         )
-        .with_server_info(Implementation::new("projectgui", env!("CARGO_PKG_VERSION")))
+        .with_server_info(Implementation::new("pgui", env!("CARGO_PKG_VERSION")))
         .with_instructions(INSTRUCTIONS)
     }
 

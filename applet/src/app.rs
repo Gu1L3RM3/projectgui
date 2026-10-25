@@ -11,7 +11,7 @@ use cosmic::prelude::*;
 use cosmic::surface;
 use cosmic::widget::{self, container};
 
-use crate::projectgui::{self, Project};
+use crate::pgui::{self, Project};
 
 const ICON_SVG: &[u8] = include_bytes!("../../assets/io.github.Gu1L3RM3.ProjectGui-symbolic.svg");
 
@@ -52,7 +52,7 @@ pub enum Message {
 impl AppModel {
     fn fetch(&mut self) -> app::Task<Message> {
         self.loading = true;
-        cosmic::Task::perform(projectgui::fetch(), |r| {
+        cosmic::Task::perform(pgui::fetch(), |r| {
             cosmic::action::Action::App(Message::Fetched(r))
         })
     }
@@ -182,7 +182,7 @@ impl cosmic::Application for AppModel {
             .spacing(6);
         if self.error.is_some() && self.projects.is_none() {
             row = row.push(widget::text("!").size(14.0));
-        } else if let Some(pct) = self.projects.as_deref().and_then(projectgui::overall) {
+        } else if let Some(pct) = self.projects.as_deref().and_then(pgui::overall) {
             row = row.push(widget::text(format!("{pct}%")).size(14.0));
         }
         let content = widget::container(row)
@@ -212,7 +212,7 @@ impl cosmic::Application for AppModel {
                 content = content
                     .push(widget::text::heading("No open projects"))
                     .push(widget::text::caption(
-                        "Create one with `projectgui add` or in the window.",
+                        "Create one with `pgui add` or in the window.",
                     ));
             }
             Some(projects) => {
@@ -281,7 +281,7 @@ impl cosmic::Application for AppModel {
                 self.loading = false;
                 match result {
                     Ok(all) => {
-                        self.projects = Some(projectgui::open(all));
+                        self.projects = Some(pgui::open(all));
                         self.error = None;
                     }
                     // Keep the last good list on screen.
@@ -296,7 +296,7 @@ impl cosmic::Application for AppModel {
                 task_id,
                 done,
             } => {
-                return cosmic::Task::perform(projectgui::set_done(slug, task_id, done), |r| {
+                return cosmic::Task::perform(pgui::set_done(slug, task_id, done), |r| {
                     cosmic::action::Action::App(Message::Changed(r))
                 });
             }
@@ -307,7 +307,7 @@ impl cosmic::Application for AppModel {
                 return self.fetch();
             }
             Message::OpenGui => {
-                projectgui::open_gui();
+                pgui::open_gui();
                 if let Some(p) = self.popup.take() {
                     return destroy_popup(p);
                 }

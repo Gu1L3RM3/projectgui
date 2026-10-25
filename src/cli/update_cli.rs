@@ -76,7 +76,7 @@ pub fn update(svc: &mut Svc, check: bool, yes: bool, json: bool) -> Result<i32> 
                 "Update available: {current} → {} ({})\n",
                 r.version, r.url
             )),
-            None => out(&format!("projectgui {current} is up to date\n")),
+            None => out(&format!("pgui {current} is up to date\n")),
         }
         if let Some(n) = &cache.notice {
             out(&format!(
@@ -100,7 +100,7 @@ pub fn update(svc: &mut Svc, check: bool, yes: bool, json: bool) -> Result<i32> 
         ));
         return Ok(0);
     }
-    if !yes && !confirm(&format!("Update projectgui to {}?", release.version))? {
+    if !yes && !confirm(&format!("Update pgui to {}?", release.version))? {
         return Err(AppError::ConfirmationRequired("update cancelled".into()));
     }
     out(&format!("{}\n", update::run_installer()?));

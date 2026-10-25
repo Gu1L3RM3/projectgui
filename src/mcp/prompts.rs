@@ -95,7 +95,7 @@ pub fn get(name: &str, args: &Map<String, Value>) -> Result<(&'static str, Strin
                  1. Call `find_project_for_path` with that absolute path.\n\
                  If the repository has a `.project-status` file, call `sync_project_file` with the repository path and stop: \
                  ProjectGui then keeps the file in step, so later changes you make with the tools are written back into it. \
-                 Read `projectgui://project-file-format` if you need to write or fix one.\n\
+                 Read `pgui://project-file-format` if you need to write or fix one.\n\
                  2. If nothing is linked, call `resolve_project` with the repository name. If a candidate is clearly the same project, \
                  use `update_project` to link the path; otherwise ask me before creating one.\n\
                  3. If it is new, call `create_project` with a short description, a sensible priority and stage, the path, and 3-8 concrete tasks.\n\
@@ -121,7 +121,7 @@ pub fn get(name: &str, args: &Map<String, Value>) -> Result<(&'static str, Strin
                  1. Call `scan_projects` with that absolute path. It writes nothing.\n\
                  2. Show me the list: which files are new, changed, in sync or invalid (with the reason). Stop if there are none.\n\
                  3. After I confirm, call `sync_project_file` once for each new or changed directory. Skip invalid files and tell me why; \
-                 read `projectgui://project-file-format` if one needs fixing, and edit the file only if I ask.\n\
+                 read `pgui://project-file-format` if one needs fixing, and edit the file only if I ask.\n\
                  4. Report what was created or updated. Sync never deletes: tasks missing from a file are kept and written back into it, so mention them. \
                  If a result has notices, show them to me."
             )

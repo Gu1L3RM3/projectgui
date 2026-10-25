@@ -3,10 +3,10 @@
 A single TOML file at the root of a project directory that describes the project. ProjectGui keeps it and its
 database in step, both ways:
 
-- **File -> ProjectGui:** edit the file, then run `projectgui sync` (or `scan --apply`, or the GUI's Scan folder).
+- **File -> ProjectGui:** edit the file, then run `pgui sync` (or `scan --apply`, or the GUI's Scan folder).
 - **ProjectGui -> file:** a change made with the CLI, the GUI or an agent over MCP is written back into the file.
 
-ProjectGui never creates the file on its own; only `projectgui init-file` does, when you ask.
+ProjectGui never creates the file on its own; only `pgui init-file` does, when you ask.
 
 ```toml
 title = "Website redesign"        # required
@@ -38,7 +38,7 @@ regular file (a symlink is refused).
 - **Tasks are matched by title.** A task in the file that is not stored is added (in file order); a stored one gets
   the status, description and priority the file gives.
 - **A sync never deletes.** A task that is stored but no longer in the file is kept, reported as "not in the file",
-  and written back into the file. To remove a task, use `projectgui task rm` (or Remove in the GUI); the removal is then
+  and written back into the file. To remove a task, use `pgui task rm` (or Remove in the GUI); the removal is then
   written to the file too.
 - **References are added** when the `(kind, value)` pair is new, never removed.
 - **It is idempotent.** Syncing the same file twice changes nothing.
@@ -53,7 +53,7 @@ regular file (a symlink is refused).
   a sync. For that instant there is no file, so a sync running at exactly that moment reports it missing.
 - **Unsynced edits are never overwritten.** ProjectGui remembers the file content it last read or wrote. If the file
   changed since then (you edited it and have not synced yet), it is left untouched and the command prints a note
-  (`note: …` on stderr; a `notices` field over MCP; the message line in the GUI). Run `projectgui sync` to load your
+  (`note: …` on stderr; a `notices` field over MCP; the message line in the GUI). Run `pgui sync` to load your
   edits; the file's values win, so repeat the change if it was undone.
 - A project without a file never gets one, and a file that is a symlink is never written.
 - A file that `sync` would reject (two tasks with the same title, left over from before titles had to be unique) is
@@ -63,9 +63,9 @@ regular file (a symlink is refused).
 ## Commands
 
 ```sh
-projectgui init-file [PROJECT] [--force]     # write a starter file in the current directory
-projectgui sync [PATH] [--dry-run]           # load the file in PATH (default: current directory)
-projectgui scan [DIR] [--depth N] [--apply]  # find files under DIR; a dry run unless --apply
+pgui init-file [PROJECT] [--force]     # write a starter file in the current directory
+pgui sync [PATH] [--dry-run]           # load the file in PATH (default: current directory)
+pgui scan [DIR] [--depth N] [--apply]  # find files under DIR; a dry run unless --apply
 ```
 
 `scan` looks up to `--depth` levels down (default 3, maximum 6), skips hidden directories, `node_modules` and `target`,

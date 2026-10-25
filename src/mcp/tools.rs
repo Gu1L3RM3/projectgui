@@ -116,7 +116,7 @@ pub fn definitions() -> Vec<ToolDef> {
         ),
         read(
             "scan_projects",
-            "Find `.project-status` files under a directory and show what loading each one would change (new, changed, in sync, invalid). Writes nothing. Read projectgui://project-file-format for the format.",
+            "Find `.project-status` files under a directory and show what loading each one would change (new, changed, in sync, invalid). Writes nothing. Read pgui://project-file-format for the format.",
             obj(
                 json!({
                     "path": { "type": "string", "description": "Absolute directory to search" },

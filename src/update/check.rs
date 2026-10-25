@@ -45,7 +45,7 @@ pub fn endpoints() -> Option<Endpoints> {
 fn get(url: &str) -> Result<String, String> {
     let agent: ureq::Agent = ureq::Agent::config_builder()
         .timeout_global(Some(TIMEOUT))
-        .user_agent(concat!("projectgui/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("pgui/", env!("CARGO_PKG_VERSION")))
         .build()
         .into();
     let mut resp = agent.get(url).call().map_err(|e| e.to_string())?;

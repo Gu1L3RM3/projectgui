@@ -1,15 +1,15 @@
 # Updates and remote notices
 
 ```sh
-projectgui --version
-projectgui version --check     # also looks up the latest release
-projectgui update --check      # exit code 0 = up to date, 10 = update available
-projectgui update              # updates in place when installed with the official installer
+pgui --version
+pgui version --check     # also looks up the latest release
+pgui update --check      # exit code 0 = up to date, 10 = update available
+pgui update              # updates in place when installed with the official installer
 ```
 
 `update` only modifies the binary when it was installed by the cargo-dist installer (an install
 receipt exists). For Homebrew, `cargo install`, distro packages or manual installs it prints the
-right command instead (`brew upgrade projectgui`, `cargo install projectgui --locked --force`, ...).
+right command instead (`brew upgrade pgui`, `cargo install pgui --locked --force`, ...).
 
 ## Passive notice
 
@@ -18,7 +18,7 @@ cache, a one-line hint when a newer release exists and any current remote notice
 refreshed at most once per 24 hours by a detached background process, so commands never wait on
 the network. The MCP server and GUI-less/machine modes never check.
 
-Opt out: `projectgui config set update.check false` or `PROJECTGUI_NO_UPDATE_CHECK=1`.
+Opt out: `pgui config set update.check false` or `PROJECTGUI_NO_UPDATE_CHECK=1`.
 Requests are plain HTTPS GETs with no identifiers or telemetry; failures are silent.
 
 ## `notice.json`
