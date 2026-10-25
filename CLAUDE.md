@@ -163,7 +163,8 @@ dist-workspace.toml    cargo-dist config: targets, installers, release features
   translucent default, slate, paper, dusk, contrast; `gui_theme`, `gui_opacity` in the config), live reload via
   `data_version`, update banner. Linux tray (ksni) with top projects, update line, Open and Quit; a second
   `projectgui gui` focuses the running window through a socket in `$XDG_RUNTIME_DIR`. Closing the window quits
-  (hide-to-tray needs `iced::daemon`).
+  (hide-to-tray needs `iced::daemon`). The window skips the tray while `projectgui-applet` runs (found via `/proc/*/cmdline`),
+  so COSMIC shows one icon, not two.
 - Tested by hand on Linux (COSMIC). macOS and Windows run the test suite in CI only; their GUI is unverified and they
   have no tray.
 - COSMIC panel applet (`applet/`): panel icon with overall progress, popup with open projects, task checkboxes and
