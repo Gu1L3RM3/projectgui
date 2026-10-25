@@ -1,0 +1,49 @@
+[package]
+name = "projectgui"
+version = "0.1.0"
+edition = "2024"
+description = "Local project tracker with CLI, MCP server and GUI"
+license = "MIT"
+repository = "https://github.com/Gu1L3RM3/projectgui"
+
+[features]
+default = ["mcp", "update"]
+mcp = ["dep:rmcp", "dep:tokio", "dep:tracing", "dep:tracing-subscriber"]
+update = ["dep:axoupdater", "dep:ureq"]
+gui = ["dep:iced", "dep:ksni"]
+
+[dependencies]
+anyhow = "1.0.104"
+axoupdater = { version = "0.10.3", optional = true, features = ["blocking"] }
+chrono = { version = "0.4.45", features = ["serde"] }
+clap = { version = "4.6.7", features = ["derive", "env"] }
+clap_complete = "4.6.11"
+dirs = "7.0.0"
+iced = { version = "0.14.0", features = ["tokio"], optional = true }
+rmcp = { version = "3.7.0", features = ["server", "transport-io"], optional = true }
+rusqlite = { version = "0.41.0", features = ["bundled", "backup"] }
+semver = { version = "1.0.28", features = ["serde"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+thiserror = "2.0.21"
+tokio = { version = "1.54.1", features = ["rt-multi-thread", "macros", "io-std"], optional = true }
+toml = "1.1.8"
+tracing = { version = "0.1.44", optional = true }
+tracing-subscriber = { version = "0.3.23", optional = true }
+ulid = "3.0.0"
+ureq = { version = "3.5.0", features = ["json"], optional = true }
+
+# The tray is a StatusNotifierItem over D-Bus, so Linux only; Windows and macOS have no tray yet.
+[target.'cfg(target_os = "linux")'.dependencies]
+ksni = { version = "0.3.7", features = ["blocking"], optional = true }
+
+[dev-dependencies]
+assert_cmd = "2.2.2"
+serde_json = "1.0.154"
+tempfile = "3.27.0"
+tiny_http = "0.12.0"
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
