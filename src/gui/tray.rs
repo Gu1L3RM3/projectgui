@@ -1,6 +1,7 @@
 //! Status-area icon (a StatusNotifierItem over D-Bus, via ksni) and the single-instance guard. Both only send
 //! `Event`s to the window; the window owns all state and pushes menu contents back through `Handle::show`.
 use std::io::ErrorKind;
+use std::os::unix::ffi::OsStrExt;
 use std::os::unix::net::{UnixListener, UnixStream};
 use std::path::{Path, PathBuf};
 
@@ -142,7 +143,24 @@ impl Handle {
 }
 
 /// `None` when the desktop has no status area (no StatusNotifierWatcher); the window works without it.
+/// `/proc/<pid>/cmdline` of the COSMIC panel applet (`applet/`), which runs the program as its first argument.
+fn is_applet(cmdline: &[u8]) -> bool {
+    let argv0 = cmdline.split(|&b| b == 0).next().unwrap_or_default();
+    Path::new(std::ffi::OsStr::from_bytes(argv0)).file_name() == Some("projectgui-applet".as_ref())
+}
+
+/// The panel applet already shows the projects, so a tray icon next to it would be a second copy.
+fn applet_running() -> bool {
+    std::fs::read_dir("/proc").is_ok_and(|dir| {
+        dir.flatten()
+            .any(|e| std::fs::read(e.path().join("cmdline")).is_ok_and(|c| is_applet(&c)))
+    })
+}
+
 pub fn spawn(tx: UnboundedSender<Event>) -> Option<Handle> {
+    if applet_running() {
+        return None;
+    }
     let tray = Tray {
         tx,
         rows: Vec::new(),
@@ -216,6 +234,15 @@ mod tests {
         assert!(!single_instance(&sock, tx), "second instance defers");
         let ev = iced::futures::executor::block_on(iced::futures::StreamExt::next(&mut rx));
         assert!(matches!(ev, Some(Event::Open(None))));
+    }
+
+    #[test]
+    fn recognizes_the_applet_by_its_command_line() {
+        assert!(is_applet(b"/home/u/.local/bin/projectgui-applet\0"));
+        assert!(is_applet(b"projectgui-applet"));
+        assert!(!is_applet(b"/home/u/.local/bin/projectgui\0gui\0"));
+        assert!(!is_applet(b"vim\0projectgui-applet\0"));
+        assert!(!is_applet(b""));
     }
 
     #[test]
