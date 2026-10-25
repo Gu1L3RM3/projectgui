@@ -149,9 +149,12 @@ pub fn passive<R: Repository>(repo: &mut R, now: Timestamp) -> Vec<String> {
 }
 
 pub fn detect_method() -> InstallMethod {
-    let has_receipt = axoupdater::AxoUpdater::new_for("projectgui")
-        .load_receipt()
-        .is_ok();
+    // A receipt only counts when it describes this executable: a dev build or another copy is not the installed one.
+    let mut updater = axoupdater::AxoUpdater::new_for("projectgui");
+    let has_receipt = updater.load_receipt().is_ok()
+        && updater
+            .check_receipt_is_for_this_executable()
+            .unwrap_or(false);
     match std::env::current_exe() {
         Ok(exe) => method::classify(&exe.canonicalize().unwrap_or(exe), has_receipt),
         Err(_) => InstallMethod::Unknown,

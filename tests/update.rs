@@ -135,6 +135,27 @@ fn update_never_modifies_a_non_installer_binary() {
 }
 
 #[test]
+fn a_receipt_for_another_install_does_not_make_this_binary_self_updating() {
+    let home = tempfile::tempdir().unwrap();
+    // The receipt the official installer writes, for a copy installed somewhere else.
+    std::fs::write(
+        home.path().join("projectgui-receipt.json"),
+        r#"{"binaries":["projectgui"],"binary_aliases":{},"cdylibs":[],"cstaticlibs":[],
+            "install_layout":"cargo-home","install_prefix":"/nonexistent/prefix","modify_path":false,
+            "provider":{"source":"cargo-dist","version":"0.32.0"},
+            "source":{"app_name":"projectgui","name":"projectgui","owner":"Gu1L3RM3","release_type":"github"},
+            "version":"0.1.0"}"#,
+    )
+    .unwrap();
+    let stub = Stub::start("v99.0.0", None);
+    let out = stdout(with_stub(home.path(), &stub).args(["update", "--yes"]));
+    assert!(
+        out.contains("Installed via") && out.contains("to upgrade"),
+        "{out}"
+    );
+}
+
+#[test]
 fn passive_notice_uses_the_cache_and_checks_once_per_day() {
     let home = tempfile::tempdir().unwrap();
     let h = home.path();
