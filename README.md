@@ -1,13 +1,16 @@
+<p align="center"><img src="assets/io.github.Gu1L3RM3.ProjectGui.svg" width="112" alt="ProjectGui icon"></p>
+
 # ProjectGui
 
 **A local project tracker for people who juggle many projects, and for the coding agents that help them.**
 
 ProjectGui keeps a list of your projects, each with a priority, a stage and a list of tasks. Progress is never
-typed in by hand: it is calculated from the tasks you finish. You can use the same data from three places:
+typed in by hand: it is calculated from the tasks you finish. You can use the same data from several places:
 
 - a **command line** (`projectgui status`) with colored progress bars,
 - an **MCP server**, so Claude Code, Codex, OpenCode and other agents can read and update your projects,
-- a **desktop window** with a **tray icon** on Linux.
+- a **desktop window** with a **tray icon** on Linux,
+- a **COSMIC panel applet** that shows your progress in the top bar.
 
 Everything lives in one SQLite file on your machine. No account, no cloud, no background service.
 
@@ -22,7 +25,7 @@ Everything lives in one SQLite file on your machine. No account, no cloud, no ba
 3. [Five-minute tutorial](#five-minute-tutorial)
 4. [Keep a status file in your repository](#keep-a-status-file-in-your-repository)
 5. [Let your coding agent manage tasks (MCP)](#let-your-coding-agent-manage-tasks-mcp)
-6. [The desktop window and tray](#the-desktop-window-and-tray)
+6. [The desktop window, tray and panel applet](#the-desktop-window-tray-and-panel-applet)
 7. [Your data: location, backup, export](#your-data-location-backup-export)
 8. [Updates](#updates)
 9. [Configuration reference](#configuration-reference)
@@ -43,6 +46,7 @@ Everything lives in one SQLite file on your machine. No account, no cloud, no ba
 - **`.project-status` file**: a small TOML file in a project folder, kept in step with the database both ways.
 - **MCP server** with tools, resources and prompts; one command registers it with Claude Code, Codex and OpenCode.
 - **Safe for concurrent use**: the CLI, the agents and the window can all write at the same time.
+- **COSMIC panel applet**: overall progress in the top bar, tick tasks off without opening the window.
 - **Scriptable**: every data command has `--json`; exit codes are stable and documented in `--help`.
 
 ---
@@ -232,7 +236,7 @@ Tools, resources, prompts and manual setup for other clients: [docs/agents.md](d
 
 ---
 
-## The desktop window and tray
+## The desktop window, tray and panel applet
 
 Start it with:
 
@@ -257,6 +261,22 @@ The choice is saved in the config file. Set the frosted window's opacity with
 **Tray (Linux).** While the window is open, a tray icon shows your top open projects with their progress, an update
 notice when there is one, *Open* and *Quit*. Running `projectgui gui` again brings the open window to the front
 instead of starting a second copy.
+
+### COSMIC panel applet
+
+On the COSMIC desktop you can also keep ProjectGui in the top panel: the icon shows overall progress, and a click opens
+a popup with your open projects. Click a project to see its tasks and tick them off; *Open ProjectGui* opens the window.
+
+The applet is built from source (it needs [libcosmic](https://github.com/pop-os/libcosmic)) and talks to the
+`projectgui` command you installed above:
+
+```sh
+cd applet
+cargo build --release
+./install.sh        # applet, icons and a ProjectGui launcher under ~/.local
+```
+
+Then add it in *Settings → Desktop → Panel → Configure panel applets → Add applet → ProjectGui*.
 
 ---
 
@@ -323,6 +343,7 @@ Details, including the `notice.json` format: [docs/update.md](docs/update.md).
 | CLI and MCP server | tested by hand and in CI | tested in CI | tested in CI |
 | Desktop window | tested by hand (COSMIC) | builds; not tested by hand | builds; not tested by hand |
 | Tray icon | yes (StatusNotifierItem) | no | no |
+| Panel applet | COSMIC | no | no |
 
 Reports from macOS and Windows users are welcome.
 
@@ -333,6 +354,7 @@ Reports from macOS and Windows users are welcome.
 ```mermaid
 flowchart TD
     CLI["CLI<br/>projectgui ..."] --> SVC
+    APPLET["COSMIC panel applet"] -->|"runs projectgui --json"| CLI
     MCP["MCP server<br/>projectgui mcp"] --> SVC
     GUI["Window + tray<br/>projectgui gui"] --> SVC
     SVC["Service<br/>validation, rules, confirmations"] --> DOM["Domain<br/>projects, tasks, progress"]
@@ -369,6 +391,9 @@ cargo run --features gui -- gui
 Cargo features: `mcp` and `update` are on by default; `gui` (window and tray) is opt-in. CI runs the test suite on
 Linux, macOS and Windows for each feature combination. Architecture rules and conventions are in
 [CLAUDE.md](CLAUDE.md).
+
+The COSMIC applet in `applet/` is its own crate (libcosmic is pinned there); build, lint and test it from that
+directory with `cargo build --release`, `cargo clippy --release -- -D warnings` and `cargo test --release`.
 
 Releases are built by [cargo-dist](https://opensource.axo.dev/cargo-dist/) when a `vX.Y.Z` tag is pushed.
 

@@ -7,7 +7,7 @@ with the code.
 
 ProjectGui: a local project tracker. Projects have a priority, a stage, tasks and a progress bar derived from finished
 tasks. The same SQLite database is used by a CLI, an MCP server for coding agents (Claude Code, Codex, OpenCode), an
-iced GUI and a Linux tray indicator. No daemon, no cloud; the network is used only for the optional update check. One Rust package, one binary named `projectgui`. Everything is written in English: code, CLI
+iced GUI and a Linux tray indicator. No daemon, no cloud; the network is used only for the optional update check. One Rust package and one binary named `projectgui`, plus a separate COSMIC panel applet crate in `applet/`. Everything is written in English: code, CLI
 output, MCP descriptions, docs, commit messages.
 
 ## Commands
@@ -56,6 +56,9 @@ src/gui/               iced window: projects, tasks, references, update banner; 
 src/mcp/               rmcp server: tools, resources, prompts, strict argument parsing
 src/update/            release check, notice.json parsing, install-method detection (feature `update`)
 tests/                 cli_e2e, mcp_protocol, repo_concurrency, update (+ tests/common helpers)
+assets/                app icon (color + symbolic SVG) and the launcher .desktop entry
+applet/                COSMIC panel applet (own crate and Cargo.lock, libcosmic pinned to COSMIC 1.0.0); reads and
+                       changes data only through the `projectgui` CLI (`--json list`, `task done/reopen`); install.sh
 docs/                  agents.md (MCP setup), update.md (update + notice.json), project-file.md (.project-status), images/ (README screenshots)
 .github/workflows/     ci.yml (fmt, clippy, tests on Linux/macOS/Windows x feature sets), release.yml (cargo-dist, on tag v*)
 dist-workspace.toml    cargo-dist config: targets, installers, release features
@@ -163,6 +166,9 @@ dist-workspace.toml    cargo-dist config: targets, installers, release features
   (hide-to-tray needs `iced::daemon`).
 - Tested by hand on Linux (COSMIC). macOS and Windows run the test suite in CI only; their GUI is unverified and they
   have no tray.
+- COSMIC panel applet (`applet/`): panel icon with overall progress, popup with open projects, task checkboxes and
+  Open ProjectGui. Panel icon checked on COSMIC; popup interaction awaits a human check; not built in CI. Build and check it with `cargo build --release`,
+  `cargo clippy --release -- -D warnings` and `cargo test --release` inside `applet/`.
 - Self-update (`projectgui update`) has not yet gone from one real release to the next.
 
 ## Releasing
