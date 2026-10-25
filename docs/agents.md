@@ -1,19 +1,19 @@
 # Connecting agents (MCP)
 
-`projectgui mcp` is a stdio MCP server. It uses the same local database as the CLI and GUI, so
-whatever an agent writes shows up immediately in `projectgui status`.
+`pgui mcp` is a stdio MCP server. It uses the same local database as the CLI and GUI, so
+whatever an agent writes shows up immediately in `pgui status`.
 
 ## Register
 
 ```sh
-projectgui install-mcp all            # dry run: prints what would change
-projectgui install-mcp all --write    # Claude Code, Codex and OpenCode
+pgui install-mcp all            # dry run: prints what would change
+pgui install-mcp all --write    # Claude Code, Codex and OpenCode
 ```
 
 | Client | What `--write` does |
 |---|---|
-| Claude Code | `claude mcp add --scope user projectgui -- <path>/projectgui mcp` |
-| Codex | `codex mcp add projectgui -- <path>/projectgui mcp` |
+| Claude Code | `claude mcp add --scope user pgui -- <path>/pgui mcp` |
+| Codex | `codex mcp add pgui -- <path>/pgui mcp` |
 | OpenCode | merges an entry into `opencode.json` (`mcp.servers` on 2.x, `mcp` on 1.x), keeps a `.projectgui-bak` copy |
 
 The registered command is the absolute path of the binary that ran `install-mcp`; re-run it after
@@ -34,7 +34,7 @@ Errors come back as tool results with `isError: true` and a JSON body
 The `destructiveHint`/`readOnlyHint` annotations are advisory only; clients may ignore them, so
 the server never relies on them.
 
-**Resources.** `projectgui://projects`, `projectgui://projects/{id}`, `projectgui://summary`.
+**Resources.** `pgui://projects`, `pgui://projects/{id}`, `pgui://summary`.
 
 **Prompts.** `track_this_project`, `sync_progress`, `plan_tasks`, `weekly_review`. These are text
 templates a client can offer to a user or hand to a model. They are not background agents: nothing
@@ -54,4 +54,4 @@ Checked on Linux with these versions; other platforms are untested.
 |---|---|---|
 | Claude Code | 2.1.310 | `claude mcp list` connected; headless run created a project, added tasks and marked one done |
 | Codex CLI | (installed via asdf) | `codex exec` created a project and marked a task done |
-| OpenCode | 2.1.3 | `opencode mcp list` shows `projectgui connected` (no model run) |
+| OpenCode | 2.1.3 | `opencode mcp list` shows `pgui connected` (no model run) |

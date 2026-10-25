@@ -15,7 +15,7 @@ targets = ["aarch64-apple-darwin", "aarch64-unknown-linux-gnu", "x86_64-apple-da
 hosting = "github"
 # Release binaries include the window and the Linux tray
 features = ["gui"]
-# The binary embeds axoupdater (`projectgui update`), so no separate updater binary
+# The binary embeds axoupdater (`pgui update`), so no separate updater binary
 install-updater = false
 # Build arm64 Linux natively instead of cross-compiling
 [dist.github-custom-runners]

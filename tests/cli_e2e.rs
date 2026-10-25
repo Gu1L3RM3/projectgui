@@ -202,11 +202,11 @@ fn help_and_version_are_complete() {
     ] {
         assert!(help.contains(word), "help is missing {word}");
     }
-    assert!(stdout(cmd(home.path()).arg("--version")).starts_with("projectgui "));
+    assert!(stdout(cmd(home.path()).arg("--version")).starts_with("pgui "));
     let v: serde_json::Value =
         serde_json::from_str(&stdout(cmd(home.path()).args(["--json", "version"]))).unwrap();
-    assert_eq!(v["name"], "projectgui");
-    assert!(stdout(cmd(home.path()).args(["completions", "bash"])).contains("projectgui"));
+    assert_eq!(v["name"], "pgui");
+    assert!(stdout(cmd(home.path()).args(["completions", "bash"])).contains("pgui"));
 }
 
 #[test]
@@ -367,10 +367,7 @@ fn cli_changes_are_written_back_unless_the_file_has_unsynced_edits() {
         .get_output()
         .clone();
     let err = String::from_utf8(out.stderr).unwrap();
-    assert!(
-        err.contains("note:") && err.contains("projectgui sync"),
-        "{err}"
-    );
+    assert!(err.contains("note:") && err.contains("pgui sync"), "{err}");
     serde_json::from_slice::<serde_json::Value>(&out.stdout).expect("stdout stays pure JSON");
     assert_eq!(
         std::fs::read_to_string(d.join(".project-status")).unwrap(),

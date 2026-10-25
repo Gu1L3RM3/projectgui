@@ -1,4 +1,4 @@
-//! `projectgui install-mcp`: register the MCP server with agent clients.
+//! `pgui install-mcp`: register the MCP server with agent clients.
 use std::path::{Path, PathBuf};
 
 use clap::ValueEnum;
@@ -14,7 +14,7 @@ pub enum Target {
     All,
 }
 
-const NAME: &str = "projectgui";
+const NAME: &str = "pgui";
 
 impl Target {
     fn each(self) -> Vec<Target> {
@@ -208,15 +208,12 @@ mod tests {
 
     #[test]
     fn snippets_use_the_absolute_binary_and_the_mcp_subcommand() {
-        let exe = Path::new("/opt/bin/projectgui");
+        let exe = Path::new("/opt/bin/pgui");
         assert_eq!(
             snippet(Target::Claude, exe),
-            "claude mcp add --scope user projectgui -- /opt/bin/projectgui mcp\n"
+            "claude mcp add --scope user pgui -- /opt/bin/pgui mcp\n"
         );
-        assert!(
-            snippet(Target::Codex, exe)
-                .contains("codex mcp add projectgui -- /opt/bin/projectgui mcp")
-        );
+        assert!(snippet(Target::Codex, exe).contains("codex mcp add pgui -- /opt/bin/pgui mcp"));
         assert!(snippet(Target::Opencode, exe).contains("\"command\""));
         assert!(snippet(Target::All, exe).matches("== ").count() == 3);
     }
@@ -226,17 +223,14 @@ mod tests {
         let mut doc =
             json!({ "theme": "x", "mcp": { "other": { "type": "local", "command": ["o"] } } });
         assert!(
-            merge_opencode(&mut doc, "/p/projectgui", Some("v2.1.3")).unwrap(),
+            merge_opencode(&mut doc, "/p/pgui", Some("v2.1.3")).unwrap(),
             "v1 layout is kept when entries already exist"
         );
-        assert!(!merge_opencode(&mut doc, "/p/projectgui", None).unwrap());
+        assert!(!merge_opencode(&mut doc, "/p/pgui", None).unwrap());
         assert_eq!(doc["mcp"]["other"]["command"][0], "o");
         assert_eq!(doc["theme"], "x");
-        assert_eq!(
-            doc["mcp"]["projectgui"]["command"],
-            json!(["/p/projectgui", "mcp"])
-        );
-        assert!(merge_opencode(&mut doc, "/elsewhere/projectgui", None).is_err());
+        assert_eq!(doc["mcp"]["pgui"]["command"], json!(["/p/pgui", "mcp"]));
+        assert!(merge_opencode(&mut doc, "/elsewhere/pgui", None).is_err());
         assert!(merge_opencode(&mut json!([]), "x", None).is_err());
         assert!(merge_opencode(&mut json!({ "mcp": 3 }), "x", None).is_err());
     }
@@ -245,12 +239,12 @@ mod tests {
     fn opencode_layout_follows_existing_config_then_version() {
         let mut v2 = json!({ "mcp": { "servers": { "a": { "command": ["a"] } } } });
         merge_opencode(&mut v2, "/p", None).unwrap();
-        assert!(v2["mcp"]["servers"]["projectgui"].is_object());
+        assert!(v2["mcp"]["servers"]["pgui"].is_object());
         let mut fresh_new = json!({});
         merge_opencode(&mut fresh_new, "/p", Some("v2.1.3")).unwrap();
-        assert!(fresh_new["mcp"]["servers"]["projectgui"].is_object());
+        assert!(fresh_new["mcp"]["servers"]["pgui"].is_object());
         let mut fresh_old = json!({});
         merge_opencode(&mut fresh_old, "/p", Some("1.4.0")).unwrap();
-        assert!(fresh_old["mcp"]["projectgui"].is_object());
+        assert!(fresh_old["mcp"]["pgui"].is_object());
     }
 }

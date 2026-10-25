@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 //
-// Talks to the `projectgui` CLI. The applet holds no rules of its own: reads use `--json list`, changes go through
+// Talks to the `pgui` CLI. The applet holds no rules of its own: reads use `--json list`, changes go through
 // the same commands a user would type, so validation, the `.project-status` mirror and concurrency stay in one place.
 
 use std::path::PathBuf;
@@ -55,24 +55,24 @@ pub fn overall(projects: &[Project]) -> Option<u8> {
     (total > 0).then(|| (done * 100 / total) as u8)
 }
 
-/// cosmic-panel starts applets with a minimal PATH that lacks `~/.local/bin`, where the installer puts `projectgui`.
+/// cosmic-panel starts applets with a minimal PATH that lacks `~/.local/bin`, where the installer puts `pgui`.
 fn binary() -> PathBuf {
     let home = std::env::var_os("HOME").map(PathBuf::from);
     let mut candidates: Vec<PathBuf> = home
         .iter()
         .flat_map(|h| {
             [
-                h.join(".local/bin/projectgui"),
-                h.join(".cargo/bin/projectgui"),
+                h.join(".local/bin/pgui"),
+                h.join(".cargo/bin/pgui"),
             ]
         })
         .collect();
-    candidates.push("/usr/local/bin/projectgui".into());
-    candidates.push("/usr/bin/projectgui".into());
+    candidates.push("/usr/local/bin/pgui".into());
+    candidates.push("/usr/bin/pgui".into());
     candidates
         .into_iter()
         .find(|p| p.is_file())
-        .unwrap_or_else(|| "projectgui".into())
+        .unwrap_or_else(|| "pgui".into())
 }
 
 async fn run(args: &[&str]) -> Result<Vec<u8>, String> {
@@ -85,7 +85,7 @@ async fn run(args: &[&str]) -> Result<Vec<u8>, String> {
         .await
         .map_err(|e| match e.kind() {
             std::io::ErrorKind::NotFound => {
-                "projectgui not found; install it to ~/.local/bin".to_string()
+                "pgui not found; install it to ~/.local/bin".to_string()
             }
             _ => format!("failed to run {}: {e}", bin.display()),
         })?;
@@ -97,12 +97,12 @@ async fn run(args: &[&str]) -> Result<Vec<u8>, String> {
         .lines()
         .next()
         .map(str::to_string)
-        .unwrap_or_else(|| format!("projectgui exited with {}", out.status)))
+        .unwrap_or_else(|| format!("pgui exited with {}", out.status)))
 }
 
 pub async fn fetch() -> Result<Vec<Project>, String> {
     let json = run(&["--json", "list"]).await?;
-    serde_json::from_slice(&json).map_err(|e| format!("could not read projectgui output: {e}"))
+    serde_json::from_slice(&json).map_err(|e| format!("could not read pgui output: {e}"))
 }
 
 /// Marks a task done, or back to todo when `done` is false. Takes the exact slug and full task id, as every
@@ -115,7 +115,7 @@ pub async fn set_done(slug: String, task_id: String, done: bool) -> Result<(), S
 /// Opens the window; a running one is focused instead (the GUI's single-instance socket).
 pub fn open_gui() {
     if let Err(e) = std::process::Command::new(binary()).arg("gui").spawn() {
-        eprintln!("projectgui-applet: could not start projectgui gui: {e}");
+        eprintln!("projectgui-applet: could not start pgui gui: {e}");
     }
 }
 

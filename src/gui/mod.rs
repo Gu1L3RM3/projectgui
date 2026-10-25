@@ -1373,7 +1373,7 @@ fn scan_form<'a>(c: Pal, f: &'a ScanForm) -> Element<'a, Msg> {
     }
     if f.scanned && f.items.is_empty() {
         col = col.push(
-            text("No .project-status file found. Create one with: projectgui init-file")
+            text("No .project-status file found. Create one with: pgui init-file")
                 .size(14)
                 .color(c.muted),
         );
@@ -1672,8 +1672,8 @@ fn footer<'a>(c: Pal, current: &str, opacity: u8, narrow: bool) -> Element<'a, M
 fn empty<'a>(c: Pal, show: Show, filtered: bool) -> Element<'a, Msg> {
     let msg = match show {
         _ if filtered => "No project matches. Change the search or press Clear.",
-        Show::Open => "Nothing open. Add a project with: projectgui add \"Project name\"",
-        Show::All => "No projects yet. Add one with: projectgui add \"Project name\"",
+        Show::Open => "Nothing open. Add a project with: pgui add \"Project name\"",
+        Show::All => "No projects yet. Add one with: pgui add \"Project name\"",
         Show::Finished => {
             "No finished projects yet. A project finishes when all its tasks are done."
         }

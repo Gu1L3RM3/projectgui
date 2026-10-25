@@ -5,7 +5,7 @@ use crate::domain::{Priority, RefKind, Stage};
 
 const LONG_ABOUT: &str = "\
 ProjectGui keeps track of your projects: priority, stage, tasks and a derived progress bar.
-The same data is available from this CLI, the MCP server (`projectgui mcp`) and the GUI.
+The same data is available from this CLI, the MCP server (`pgui mcp`) and the GUI.
 
 PROJECT arguments accept the project's slug, an old slug, or its ULID. Read-only commands
 (status, show, list) also accept any unique prefix or fragment of the slug/title; commands that
@@ -14,7 +14,7 @@ TASK and REFERENCE arguments accept the ULID or its last 4+ characters (shown di
 
 DATA
   Stored in a local SQLite database (WAL mode, safe for concurrent use by CLI, MCP and GUI).
-  Default location is shown by `projectgui config path`; override with PROJECTGUI_DB.
+  Default location is shown by `pgui config path`; override with PROJECTGUI_DB.
 
 ENVIRONMENT
   PROJECTGUI_DB       path of the database file
@@ -27,16 +27,16 @@ EXIT CODES
 
 const AFTER_HELP: &str = "\
 EXAMPLES
-  projectgui add \"Website redesign\" -p high -s in-progress --here
-  projectgui task add website \"Write copy\" \"Pick fonts\"
-  projectgui task done website a1b2c3
-  projectgui status                      # overview of every project
-  projectgui status --here               # project linked to the current directory
-  projectgui status website              # one project in detail
-  projectgui list --priority high,critical --min-progress 50 --sort progress";
+  pgui add \"Website redesign\" -p high -s in-progress --here
+  pgui task add website \"Write copy\" \"Pick fonts\"
+  pgui task done website a1b2c3
+  pgui status                      # overview of every project
+  pgui status --here               # project linked to the current directory
+  pgui status website              # one project in detail
+  pgui list --priority high,critical --min-progress 50 --sort progress";
 
 #[derive(Parser, Debug)]
-#[command(name = "projectgui", version, about = "Local project tracker with CLI, MCP server and GUI",
+#[command(name = "pgui", version, about = "Local project tracker with CLI, MCP server and GUI",
           long_about = LONG_ABOUT, after_long_help = AFTER_HELP, propagate_version = true)]
 pub struct Cli {
     /// Machine-readable JSON output (where the command prints data)
@@ -191,7 +191,7 @@ pub enum Command {
     },
     /// Write a starter .project-status file in the current directory
     InitFile {
-        /// Project to describe; it must be linked to this directory (`projectgui link`)
+        /// Project to describe; it must be linked to this directory (`pgui link`)
         project: Option<String>,
         /// Overwrite an existing file
         #[arg(long)]

@@ -25,9 +25,9 @@ impl InstallMethod {
     /// What the user should run when we must not update in place.
     pub fn upgrade_hint(self) -> &'static str {
         match self {
-            Self::Installer => "projectgui update",
-            Self::Homebrew => "brew upgrade projectgui",
-            Self::Cargo => "cargo install projectgui --locked --force",
+            Self::Installer => "pgui update",
+            Self::Homebrew => "brew upgrade pgui",
+            Self::Cargo => "cargo install pgui --locked --force",
             Self::System => {
                 "update it with your package manager (apt, dnf, pacman, winget, ...) or reinstall from the releases page"
             }
@@ -61,25 +61,16 @@ mod tests {
     #[test]
     fn classifies_by_location_and_receipt() {
         let c = |p: &str, r| classify(Path::new(p), r);
+        assert_eq!(c("/home/u/.local/bin/pgui", true), InstallMethod::Installer);
         assert_eq!(
-            c("/home/u/.local/bin/projectgui", true),
-            InstallMethod::Installer
-        );
-        assert_eq!(
-            c("/opt/homebrew/Cellar/projectgui/0.1/bin/projectgui", true),
+            c("/opt/homebrew/Cellar/pgui/0.1/bin/pgui", true),
             InstallMethod::Homebrew
         );
+        assert_eq!(c("/home/u/.cargo/bin/pgui", false), InstallMethod::Cargo);
+        assert_eq!(c("/usr/bin/pgui", false), InstallMethod::System);
+        assert_eq!(c("C:\\Users\\u\\pgui.exe", false), InstallMethod::Unknown);
         assert_eq!(
-            c("/home/u/.cargo/bin/projectgui", false),
-            InstallMethod::Cargo
-        );
-        assert_eq!(c("/usr/bin/projectgui", false), InstallMethod::System);
-        assert_eq!(
-            c("C:\\Users\\u\\projectgui.exe", false),
-            InstallMethod::Unknown
-        );
-        assert_eq!(
-            c("/home/u/dev/target/debug/projectgui", false),
+            c("/home/u/dev/target/debug/pgui", false),
             InstallMethod::Unknown
         );
     }

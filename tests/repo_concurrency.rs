@@ -15,7 +15,7 @@ fn concurrent_processes_lose_nothing_and_keep_the_database_consistent() {
     stdout(cmd(h).args(["add", "Shared"]));
 
     // Each worker is a separate process: adds tasks to one project and creates same-titled projects.
-    let bin = assert_cmd::cargo::cargo_bin("projectgui");
+    let bin = assert_cmd::cargo::cargo_bin("pgui");
     let children: Vec<_> = (0..WORKERS)
         .map(|w| {
             let script = (0..TASKS_EACH)

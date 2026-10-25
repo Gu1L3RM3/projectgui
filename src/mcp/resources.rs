@@ -6,11 +6,11 @@ use crate::domain::{AppError, Result};
 use crate::repo::Repository;
 use crate::service::{Filter, Service};
 
-pub const PROJECTS: &str = "projectgui://projects";
-pub const SUMMARY: &str = "projectgui://summary";
-pub const PROJECT_FILE_FORMAT: &str = "projectgui://project-file-format";
-pub const PROJECT_PREFIX: &str = "projectgui://projects/";
-pub const PROJECT_TEMPLATE: &str = "projectgui://projects/{id}";
+pub const PROJECTS: &str = "pgui://projects";
+pub const SUMMARY: &str = "pgui://summary";
+pub const PROJECT_FILE_FORMAT: &str = "pgui://project-file-format";
+pub const PROJECT_PREFIX: &str = "pgui://projects/";
+pub const PROJECT_TEMPLATE: &str = "pgui://projects/{id}";
 
 /// (uri, name, description, mime)
 pub const STATIC: &[(&str, &str, &str, &str)] = &[
@@ -23,7 +23,7 @@ pub const STATIC: &[(&str, &str, &str, &str)] = &[
     (
         SUMMARY,
         "summary",
-        "Plain-text status overview of every project, same as `projectgui status`",
+        "Plain-text status overview of every project, same as `pgui status`",
         "text/plain",
     ),
     (
@@ -104,7 +104,7 @@ mod tests {
         let format = read(&mut s, PROJECT_FILE_FORMAT).unwrap();
         assert!(format.mime == "text/markdown" && format.text.contains("[[task]]"));
         assert_eq!(
-            read(&mut s, "projectgui://nope").err().unwrap().code(),
+            read(&mut s, "pgui://nope").err().unwrap().code(),
             "not_found"
         );
         assert!(read(&mut s, &format!("{PROJECT_PREFIX}missing")).is_err());

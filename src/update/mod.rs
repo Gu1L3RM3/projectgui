@@ -89,7 +89,7 @@ pub fn passive_lines(
     let mut lines = vec![];
     if let Some(r) = newer(cache, current) {
         lines.push(format!(
-            "projectgui {} is available (you have {current}). Run `projectgui update`. {}",
+            "pgui {} is available (you have {current}). Run `pgui update`. {}",
             r.version, r.url
         ));
     }
@@ -150,7 +150,7 @@ pub fn passive<R: Repository>(repo: &mut R, now: Timestamp) -> Vec<String> {
 
 pub fn detect_method() -> InstallMethod {
     // A receipt only counts when it describes this executable: a dev build or another copy is not the installed one.
-    let mut updater = axoupdater::AxoUpdater::new_for("projectgui");
+    let mut updater = axoupdater::AxoUpdater::new_for("pgui");
     let has_receipt = updater.load_receipt().is_ok()
         && updater
             .check_receipt_is_for_this_executable()
@@ -163,7 +163,7 @@ pub fn detect_method() -> InstallMethod {
 
 /// Upgrades in place; only valid for `InstallMethod::Installer`.
 pub fn run_installer() -> Result<String> {
-    let mut updater = axoupdater::AxoUpdater::new_for("projectgui");
+    let mut updater = axoupdater::AxoUpdater::new_for("pgui");
     updater
         .load_receipt()
         .map_err(|e| AppError::Storage(format!("install receipt not found: {e}")))?;
@@ -216,7 +216,7 @@ mod tests {
         let now = chrono::Utc::now();
         let cur = Version::new(0, 1, 0);
         let (lines, _) = passive_lines(&cache("0.2.0", None), &[], &cur, now);
-        assert!(lines[0].contains("0.2.0") && lines[0].contains("projectgui update"));
+        assert!(lines[0].contains("0.2.0") && lines[0].contains("pgui update"));
         assert!(
             passive_lines(&cache("0.1.0", None), &[], &cur, now)
                 .0

@@ -97,7 +97,7 @@ impl ksni::Tray for Tray {
     // Without this the host gets ItemIsMenu=false and a left click calls the empty `activate`.
     const MENU_ON_ACTIVATE: bool = true;
     fn id(&self) -> String {
-        "projectgui".into()
+        "pgui".into()
     }
     fn title(&self) -> String {
         "ProjectGui".into()
@@ -240,7 +240,7 @@ mod tests {
     fn recognizes_the_applet_by_its_command_line() {
         assert!(is_applet(b"/home/u/.local/bin/projectgui-applet\0"));
         assert!(is_applet(b"projectgui-applet"));
-        assert!(!is_applet(b"/home/u/.local/bin/projectgui\0gui\0"));
+        assert!(!is_applet(b"/home/u/.local/bin/pgui\0gui\0"));
         assert!(!is_applet(b"vim\0projectgui-applet\0"));
         assert!(!is_applet(b""));
     }

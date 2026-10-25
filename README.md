@@ -7,7 +7,7 @@
 ProjectGui keeps a list of your projects, each with a priority, a stage and a list of tasks. Progress is never
 typed in by hand: it is calculated from the tasks you finish. You can use the same data from several places:
 
-- a **command line** (`projectgui status`) with colored progress bars,
+- a **command line** (`pgui status`) with colored progress bars,
 - an **MCP server**, so Claude Code, Codex, OpenCode and other agents can read and update your projects,
 - a **desktop window** with a **tray icon** on Linux,
 - a **COSMIC panel applet** that shows your progress in the top bar.
@@ -41,7 +41,7 @@ Everything lives in one SQLite file on your machine. No account, no cloud, no ba
   `planning`, `in-progress`, `review`, `done`, `paused`). Archive what you are not working on.
 - **Tasks** with status `todo`, `in-progress`, `blocked` or `done`. The progress bar shows each state in its own color.
 - **References**: attach commit hashes, pull requests and issues to a project or task (stored locally, nothing is synced).
-- **Fuzzy lookups for reading, exact names for writing.** `projectgui show web` finds "Website redesign", but a
+- **Fuzzy lookups for reading, exact names for writing.** `pgui show web` finds "Website redesign", but a
   command that changes data needs the exact slug or id, so a typo never edits the wrong project.
 - **`.project-status` file**: a small TOML file in a project folder, kept in step with the database both ways.
 - **MCP server** with tools, resources and prompts; one command registers it with Claude Code, Codex and OpenCode.
@@ -58,17 +58,17 @@ Everything lives in one SQLite file on your machine. No account, no cloud, no ba
 Linux and macOS:
 
 ```sh
-curl --proto '=https' --tlsv1.2 -LsSf https://github.com/Gu1L3RM3/projectgui/releases/latest/download/projectgui-installer.sh | sh
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/Gu1L3RM3/projectgui/releases/latest/download/pgui-installer.sh | sh
 ```
 
 Windows (PowerShell):
 
 ```powershell
-powershell -ExecutionPolicy Bypass -c "irm https://github.com/Gu1L3RM3/projectgui/releases/latest/download/projectgui-installer.ps1 | iex"
+powershell -ExecutionPolicy Bypass -c "irm https://github.com/Gu1L3RM3/projectgui/releases/latest/download/pgui-installer.ps1 | iex"
 ```
 
-The installer puts `projectgui` in `~/.cargo/bin` (it tells you if that folder is not on your `PATH`). Installed this
-way, `projectgui update` can update itself later.
+The installer puts `pgui` in `~/.cargo/bin` (it tells you if that folder is not on your `PATH`). Installed this
+way, `pgui update` can update itself later.
 
 ### Download an archive
 
@@ -89,7 +89,7 @@ cargo install --path . --features gui  # also the desktop window and tray
 Check that it works:
 
 ```sh
-projectgui version
+pgui version
 ```
 
 ---
@@ -99,7 +99,7 @@ projectgui version
 ### 1. Create a project with a few tasks
 
 ```sh
-projectgui add "Website redesign" -p high -s in-progress \
+pgui add "Website redesign" -p high -s in-progress \
   -d "New marketing site" \
   -t "Write copy" -t "Pick fonts" -t "Build landing page"
 ```
@@ -110,16 +110,16 @@ old slug keeps working.
 ### 2. See everything at a glance
 
 ```sh
-projectgui status
+pgui status
 ```
 
 One line per project: priority signal, stage, a progress bar and how many tasks are done. Projects are sorted by
-priority; try `projectgui list --sort progress` or `projectgui list --help` for filters.
+priority; try `pgui list --sort progress` or `pgui list --help` for filters.
 
 ### 3. Look inside a project
 
 ```sh
-projectgui show website-redesign
+pgui show website-redesign
 ```
 
 ```
@@ -139,17 +139,17 @@ The short code after each task is the end of its id. Use it to point at a task.
 ### 4. Move tasks forward
 
 ```sh
-projectgui task start website-redesign 2F7F2A      # in progress
-projectgui task done  website-redesign 2F7F2A      # done: the progress bar moves
-projectgui task block website-redesign Q46F5K      # blocked
-projectgui task add   website-redesign "Pricing page" "Launch"
+pgui task start website-redesign 2F7F2A      # in progress
+pgui task done  website-redesign 2F7F2A      # done: the progress bar moves
+pgui task block website-redesign Q46F5K      # blocked
+pgui task add   website-redesign "Pricing page" "Launch"
 ```
 
 ### 5. Change the project itself
 
 ```sh
-projectgui edit website-redesign --stage review --priority critical
-projectgui archive website-redesign                 # hide it; `unarchive` brings it back
+pgui edit website-redesign --stage review --priority critical
+pgui archive website-redesign                 # hide it; `unarchive` brings it back
 ```
 
 ### 6. Link a folder to a project
@@ -158,15 +158,15 @@ Inside the project's folder:
 
 ```sh
 cd ~/code/website
-projectgui link website-redesign
-projectgui status --here                            # shows the project for the current folder
+pgui link website-redesign
+pgui status --here                            # shows the project for the current folder
 ```
 
 ### Tips
 
-- `projectgui --help` and `projectgui <command> --help` explain every option, the exit codes and environment variables.
-- Add `--json` to any data command to use it in scripts: `projectgui list --json | jq '.[].title'`.
-- Deleting is deliberate: `projectgui rm website-redesign` asks you to type the project's title.
+- `pgui --help` and `pgui <command> --help` explain every option, the exit codes and environment variables.
+- Add `--json` to any data command to use it in scripts: `pgui list --json | jq '.[].title'`.
+- Deleting is deliberate: `pgui rm website-redesign` asks you to type the project's title.
 
 ---
 
@@ -177,7 +177,7 @@ reviewing project status in pull requests, or for editing tasks in your editor.
 
 ```sh
 cd ~/code/website
-projectgui init-file            # writes .project-status for the linked project
+pgui init-file            # writes .project-status for the linked project
 ```
 
 ```toml
@@ -197,12 +197,12 @@ status = "in-progress"
 
 How it stays in sync:
 
-- **You edit the file**, then run `projectgui sync` to load it into the database.
+- **You edit the file**, then run `pgui sync` to load it into the database.
 - **You change the project anywhere else** (CLI, window, agent): ProjectGui writes the change back into the file.
 - If you edited the file and have not synced yet, ProjectGui does **not** overwrite it; it tells you instead.
 - Tasks missing from the file are never deleted from the database.
 
-Find and load many files at once: `projectgui scan ~/code` (dry run) and `projectgui scan ~/code --apply`.
+Find and load many files at once: `pgui scan ~/code` (dry run) and `pgui scan ~/code --apply`.
 
 Full format: [docs/project-file.md](docs/project-file.md).
 
@@ -214,8 +214,8 @@ ProjectGui includes an [MCP](https://modelcontextprotocol.io) server. Once regis
 create tasks, mark them done and attach pull requests while it works.
 
 ```sh
-projectgui install-mcp all            # dry run: shows what it would change
-projectgui install-mcp all --write    # registers with Claude Code, Codex and OpenCode
+pgui install-mcp all            # dry run: shows what it would change
+pgui install-mcp all --write    # registers with Claude Code, Codex and OpenCode
 ```
 
 Then ask your agent things like:
@@ -241,7 +241,7 @@ Tools, resources, prompts and manual setup for other clients: [docs/agents.md](d
 Start it with:
 
 ```sh
-projectgui gui
+pgui gui
 ```
 
 (Requires a build with the `gui` feature; the installers and release archives include it.)
@@ -256,10 +256,10 @@ What you can do in the window:
 
 **Themes.** Pick one in the footer: *frosted* (translucent, default), *slate*, *paper*, *dusk* and *contrast*.
 The choice is saved in the config file. Set the frosted window's opacity with
-`projectgui config set gui_opacity 70` (20-100).
+`pgui config set gui_opacity 70` (20-100).
 
 **Tray (Linux).** While the window is open, a tray icon shows your top open projects with their progress, an update
-notice when there is one, *Open* and *Quit*. Running `projectgui gui` again brings the open window to the front
+notice when there is one, *Open* and *Quit*. Running `pgui gui` again brings the open window to the front
 instead of starting a second copy. When the COSMIC panel applet (below) is running, the window skips the tray icon, since the
 applet already shows the same projects.
 
@@ -269,7 +269,7 @@ On the COSMIC desktop you can also keep ProjectGui in the top panel: the icon sh
 a popup with your open projects. Click a project to see its tasks and tick them off; *Open ProjectGui* opens the window.
 
 The applet is built from source (it needs [libcosmic](https://github.com/pop-os/libcosmic)) and talks to the
-`projectgui` command you installed above:
+`pgui` command you installed above:
 
 ```sh
 cd applet
@@ -284,15 +284,15 @@ Then add it in *Settings → Desktop → Panel → Configure panel applets → A
 ## Your data: location, backup, export
 
 ```sh
-projectgui config path          # where the config file and the database are
+pgui config path          # where the config file and the database are
 ```
 
 | Task | Command |
 |---|---|
-| Consistent copy of the database (safe while other programs write) | `projectgui backup` or `projectgui backup --out ~/pg-backup.db` |
-| Everything as JSON | `projectgui export --out projects.json` |
-| Merge a JSON export (existing ids are kept) | `projectgui import projects.json` |
-| Use another database (e.g. a synced folder) | `PROJECTGUI_DB=/path/to/file.db projectgui status` |
+| Consistent copy of the database (safe while other programs write) | `pgui backup` or `pgui backup --out ~/pg-backup.db` |
+| Everything as JSON | `pgui export --out projects.json` |
+| Merge a JSON export (existing ids are kept) | `pgui import projects.json` |
+| Use another database (e.g. a synced folder) | `PROJECTGUI_DB=/path/to/file.db pgui status` |
 
 Ids are [ULIDs](https://github.com/ulid/spec) and never change, so exports from two machines merge cleanly.
 
@@ -301,13 +301,13 @@ Ids are [ULIDs](https://github.com/ulid/spec) and never change, so exports from 
 ## Updates
 
 ```sh
-projectgui update --check       # only report (exit code 10 means an update is available)
-projectgui update               # update in place (when installed with the installer)
+pgui update --check       # only report (exit code 10 means an update is available)
+pgui update               # update in place (when installed with the installer)
 ```
 
 Once a day, interactive commands check GitHub for a newer release in the background and print a one-line notice.
 The check is skipped in `--json` mode, when output is not a terminal, and in the MCP server. Turn it off with
-`projectgui config set update.check false` or `PROJECTGUI_NO_UPDATE_CHECK=1`.
+`pgui config set update.check false` or `PROJECTGUI_NO_UPDATE_CHECK=1`.
 
 Details, including the `notice.json` format: [docs/update.md](docs/update.md).
 
@@ -315,7 +315,7 @@ Details, including the `notice.json` format: [docs/update.md](docs/update.md).
 
 ## Configuration reference
 
-`projectgui config list` prints all settings; `projectgui config set <key> <value>` changes one.
+`pgui config list` prints all settings; `pgui config set <key> <value>` changes one.
 
 | Setting | Default | Meaning |
 |---|---|---|
@@ -354,10 +354,10 @@ Reports from macOS and Windows users are welcome.
 
 ```mermaid
 flowchart TD
-    CLI["CLI<br/>projectgui ..."] --> SVC
-    APPLET["COSMIC panel applet"] -->|"runs projectgui --json"| CLI
-    MCP["MCP server<br/>projectgui mcp"] --> SVC
-    GUI["Window + tray<br/>projectgui gui"] --> SVC
+    CLI["CLI<br/>pgui ..."] --> SVC
+    APPLET["COSMIC panel applet"] -->|"runs pgui --json"| CLI
+    MCP["MCP server<br/>pgui mcp"] --> SVC
+    GUI["Window + tray<br/>pgui gui"] --> SVC
     SVC["Service<br/>validation, rules, confirmations"] --> DOM["Domain<br/>projects, tasks, progress"]
     SVC --> REPO["Repository<br/>SQLite, one transaction per change"]
     SVC <--> FILE[".project-status files"]

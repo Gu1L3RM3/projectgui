@@ -100,7 +100,7 @@ pub fn status_overview(
     now: Timestamp,
 ) -> String {
     if projects.is_empty() {
-        return "No projects yet. Create one with: projectgui add \"My project\"\n".into();
+        return "No projects yet. Create one with: pgui add \"My project\"\n".into();
     }
     let mut out = String::new();
     let _ = writeln!(
@@ -340,7 +340,7 @@ pub fn sync_report(r: &SyncReport, st: &Style) -> String {
 /// One row per file found, then a count line. `applied` is false for the default dry run.
 pub fn scan_table(items: &[ScanItem], applied: bool, st: &Style) -> String {
     if items.is_empty() {
-        return format!("No {FILE_NAME} files found. Create one with: projectgui init-file\n");
+        return format!("No {FILE_NAME} files found. Create one with: pgui init-file\n");
     }
     let width = items
         .iter()
