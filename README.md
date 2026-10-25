@@ -260,7 +260,8 @@ The choice is saved in the config file. Set the frosted window's opacity with
 
 **Tray (Linux).** While the window is open, a tray icon shows your top open projects with their progress, an update
 notice when there is one, *Open* and *Quit*. Running `projectgui gui` again brings the open window to the front
-instead of starting a second copy.
+instead of starting a second copy. When the COSMIC panel applet (below) is running, the window skips the tray icon, since the
+applet already shows the same projects.
 
 ### COSMIC panel applet
 
