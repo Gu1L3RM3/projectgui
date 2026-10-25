@@ -138,6 +138,12 @@ pub fn run(svc: Svc, cfg: Config, cfg_path: PathBuf) -> Result<()> {
         size: iced::Size::new(900.0, 720.0),
         min_size: Some(iced::Size::new(MIN_WIDTH, 420.0)),
         transparent: true,
+        // Matches assets/io.github.Gu1L3RM3.ProjectGui.desktop, so docks show the app's icon for this window.
+        #[cfg(target_os = "linux")]
+        platform_specific: iced::window::settings::PlatformSpecific {
+            application_id: "io.github.Gu1L3RM3.ProjectGui".into(),
+            ..Default::default()
+        },
         ..Default::default()
     })
     .subscription(|_| {
