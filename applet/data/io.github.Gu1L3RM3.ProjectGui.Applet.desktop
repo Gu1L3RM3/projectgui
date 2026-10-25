@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=ProjectGui
+Comment=Your projects and their progress in the panel
+Type=Application
+Exec=projectgui-applet
+Icon=io.github.Gu1L3RM3.ProjectGui-symbolic
+Terminal=false
+Categories=COSMIC;
+Keywords=COSMIC;Iced;project;task;progress;
+StartupNotify=true
+NoDisplay=true
+X-CosmicApplet=true
+X-CosmicHoverPopup=Auto

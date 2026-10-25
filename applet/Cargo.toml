@@ -1,0 +1,24 @@
+[package]
+name = "projectgui-applet"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "COSMIC panel applet for ProjectGui"
+repository = "https://github.com/Gu1L3RM3/projectgui"
+publish = false
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["time", "process"] }
+
+[dependencies.libcosmic]
+git = "https://github.com/pop-os/libcosmic"
+# libcosmic has no release tags and master moves the applet API; this is the revision COSMIC 1.0.0 ships.
+rev = "511384f6206527cf87369da67a9164831afbabef"
+default-features = false
+features = ["applet", "applet-token", "multi-window", "tokio", "wayland", "winit"]
+
+[profile.release]
+lto = "thin"
+strip = true
