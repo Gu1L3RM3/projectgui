@@ -588,9 +588,11 @@ mod tests {
     fn clearing_path_and_archiving() {
         let mut s = svc();
         let mut n = np("A");
-        n.path = Some("/tmp/a/".into());
+        let a = std::env::temp_dir().join("a");
+        let a = a.to_str().unwrap();
+        n.path = Some(format!("{a}/"));
         let p = s.create_project(n).unwrap();
-        assert_eq!(p.path.as_deref(), Some("/tmp/a"));
+        assert_eq!(p.path.as_deref(), Some(a));
         let p = s
             .update_project(
                 "a",

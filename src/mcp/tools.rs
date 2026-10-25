@@ -633,17 +633,18 @@ mod tests {
     #[test]
     fn update_project_can_clear_path_and_archive() {
         let mut s = svc();
+        let dir = std::env::temp_dir().join("p");
         let p = run(
             &mut s,
             "create_project",
-            json!({ "title": "P", "path": "/tmp/p" }),
+            json!({ "title": "P", "path": dir }),
         )
         .unwrap();
         let pid = p["id"].as_str().unwrap();
         let found = run(
             &mut s,
             "find_project_for_path",
-            json!({ "path": "/tmp/p/src" }),
+            json!({ "path": dir.join("src") }),
         )
         .unwrap();
         assert_eq!(found["project"]["id"], pid);

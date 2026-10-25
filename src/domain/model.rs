@@ -380,7 +380,9 @@ mod tests {
         assert_eq!(clean_title("title", " ok ").unwrap(), "ok");
         assert!(clean_path("relative/dir").is_err());
         assert!(clean_path("/").is_err());
-        assert_eq!(clean_path("/a/").unwrap(), "/a");
+        let a = std::env::temp_dir().join("a");
+        let a = a.to_str().unwrap();
+        assert_eq!(clean_path(&format!("{a}/")).unwrap(), a);
         assert_eq!(clean_text("d", "a\r\n\tb").unwrap(), "a\n\tb");
         assert!(clean_text("d", "a\u{1b}]0;x\u{7}").is_err());
         assert!(clean_url(Some("javascript:alert(1)")).is_err());
