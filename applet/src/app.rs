@@ -245,13 +245,11 @@ impl cosmic::Application for AppModel {
         content = content.push(
             widget::Row::new()
                 .push(
-                    widget::button::standard(if self.loading {
-                        "Refreshing…"
-                    } else {
-                        "Refresh"
-                    })
-                    .on_press_maybe((!self.loading).then_some(Message::Refresh))
-                    .width(Length::Fill),
+                    // A fixed label: the background refresh every few seconds made a changing one flicker.
+                    // `Refresh` is already ignored while a fetch runs.
+                    widget::button::standard("Refresh")
+                        .on_press(Message::Refresh)
+                        .width(Length::Fill),
                 )
                 .push(
                     widget::button::suggested("Open ProjectGui")
