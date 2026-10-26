@@ -34,11 +34,9 @@ pub struct Task {
 }
 
 impl Project {
-    pub fn in_progress(&self) -> usize {
-        self.tasks
-            .iter()
-            .filter(|t| t.status == "in-progress")
-            .count()
+    /// Tasks with this status, e.g. `"in-progress"` or `"blocked"`.
+    pub fn count(&self, status: &str) -> usize {
+        self.tasks.iter().filter(|t| t.status == status).count()
     }
 }
 
@@ -60,12 +58,7 @@ fn binary() -> PathBuf {
     let home = std::env::var_os("HOME").map(PathBuf::from);
     let mut candidates: Vec<PathBuf> = home
         .iter()
-        .flat_map(|h| {
-            [
-                h.join(".local/bin/pgui"),
-                h.join(".cargo/bin/pgui"),
-            ]
-        })
+        .flat_map(|h| [h.join(".local/bin/pgui"), h.join(".cargo/bin/pgui")])
         .collect();
     candidates.push("/usr/local/bin/pgui".into());
     candidates.push("/usr/bin/pgui".into());
@@ -143,7 +136,7 @@ mod tests {
             open.iter().map(|p| p.slug.as_str()).collect::<Vec<_>>(),
             ["site", "lab"]
         );
-        assert_eq!(open[0].in_progress(), 1);
+        assert_eq!(open[0].count("in-progress"), 1);
         assert_eq!(overall(&open), Some(33));
         assert_eq!(overall(&open[1..]), None);
     }
