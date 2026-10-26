@@ -21,6 +21,7 @@ const REFRESH: Duration = Duration::from_secs(5);
 // The window's "slate" palette, so the bars mean the same thing in the panel and in the app.
 const DONE: Color = Color::from_rgb(70.0 / 255.0, 184.0 / 255.0, 160.0 / 255.0);
 const ACTIVE: Color = Color::from_rgb(229.0 / 255.0, 178.0 / 255.0, 93.0 / 255.0);
+const BLOCKED: Color = Color::from_rgb(227.0 / 255.0, 107.0 / 255.0, 116.0 / 255.0);
 
 #[derive(Default)]
 pub struct AppModel {
@@ -75,16 +76,19 @@ fn segment<'a>(portion: u16, color: Color) -> Element<'a, Message> {
         .into()
 }
 
-/// Done and in-progress shares of a project's tasks; `FillPortion(0)` is degenerate in iced, so empty parts are skipped.
+/// Done, in-progress and blocked shares of a project's tasks; `FillPortion(0)` is degenerate in iced, so empty parts
+/// are skipped.
 fn meter<'a>(p: &Project) -> Element<'a, Message> {
     let total = p.progress.total.max(1) as u16;
     let done = p.progress.done as u16;
-    let active = (p.in_progress() as u16).min(total.saturating_sub(done));
-    let rest = total.saturating_sub(done + active);
+    let active = (p.count("in-progress") as u16).min(total.saturating_sub(done));
+    let blocked = (p.count("blocked") as u16).min(total.saturating_sub(done + active));
+    let rest = total.saturating_sub(done + active + blocked);
     let mut bar = widget::Row::new().height(Length::Fixed(6.0)).spacing(2);
     for (portion, color) in [
         (done, DONE),
         (active, ACTIVE),
+        (blocked, BLOCKED),
         (rest, Color::from_rgba(1.0, 1.0, 1.0, 0.12)),
     ] {
         if portion > 0 {
@@ -105,8 +109,11 @@ fn project_view<'a>(p: &Project, expanded: bool) -> Element<'a, Message> {
         "{} · {} · {} of {} done",
         p.priority, p.stage, p.progress.done, p.progress.total
     );
-    if p.in_progress() > 0 {
-        detail.push_str(&format!(" · {} in progress", p.in_progress()));
+    for (status, label) in [("blocked", "blocked"), ("in-progress", "in progress")] {
+        let n = p.count(status);
+        if n > 0 {
+            detail.push_str(&format!(" · {n} {label}"));
+        }
     }
 
     let mut column = widget::Column::new()
@@ -238,13 +245,11 @@ impl cosmic::Application for AppModel {
         content = content.push(
             widget::Row::new()
                 .push(
-                    widget::button::standard(if self.loading {
-                        "Refreshing…"
-                    } else {
-                        "Refresh"
-                    })
-                    .on_press_maybe((!self.loading).then_some(Message::Refresh))
-                    .width(Length::Fill),
+                    // A fixed label: the background refresh every few seconds made a changing one flicker.
+                    // `Refresh` is already ignored while a fetch runs.
+                    widget::button::standard("Refresh")
+                        .on_press(Message::Refresh)
+                        .width(Length::Fill),
                 )
                 .push(
                     widget::button::suggested("Open ProjectGui")
